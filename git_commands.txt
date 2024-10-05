@@ -11,6 +11,7 @@ Stages of GIT/workflow
 -Workspace
 -Staging area
 -Loal repository
+-Loal repo
 -github
 
 Process
@@ -83,8 +84,8 @@ git reset is a powerful command that is used to undo local changes to the state 
 -------------------------***********************************----------------------
 
 ************************
-reset ---> before commit
-revert ---> after commit
+reset ---> before pushing to remote repo GITHUB
+revert ---> after commit to remote repo GITHUB (more flexible)
 ************************
 
 Git REVERT
@@ -96,7 +97,7 @@ It does not delete any data instead git creates a new commit with the included f
 -cat > newfile
 -git add .
 -git commit -m "code"
--git log --omline
+-git log --oneline
 -git revert <commit id>
 ------------------------------------******************************------------------ 
 
@@ -120,4 +121,14 @@ Now go to your CLI and run command
 -git clone <url of github>
 It creates a local repo automatically in linux machine with the same name as in github account
 
+---------------------------*****************************---------------------------
 
+Git LOG
+
+-git log -p -2 (last 2 commmit with diff)
+-git log --stat (summary of changes)
+-git log --pretty=oneline
+-git log -S function_name
+----------------*************************************----------------------
+
+-git remote -v (to get github url)
