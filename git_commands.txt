@@ -9,8 +9,8 @@ Source Code Management(SCM) is of 2 types
 Stages of GIT/workflow
 
 -Workspace
--Staging are
--Loal repo
+-Staging area
+-Loal repository
 -github
 
 Process
@@ -19,8 +19,8 @@ create a directory and go inside it
 -touch test_file (put some data)
 -git status (what is repo status)
 -git add . (from working space to staging area)
- git config --global user.email "nikitachandrakar26@gmail.com"
- git config --global user.name "Nikita"
+ git config --global user.email "email id"
+ git config --global user.name "name"
 -git commit -m "first commit"
 -git status
 -git log (who commited and at what time)
