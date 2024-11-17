@@ -1,0 +1,286 @@
+Linux basics
+
+OS stores or manage data on disk or partitions using a stucture called FS.
+FS includes files, directories, and its related permissions.
+
+FILESYSTEM HIERARCHY
+/home - home directory of all users
+/root - home directory of root user
+/opt - install any 3rd party programs
+/mnt - to mount file systems temporarly
+/tmp - to store temporary data
+/media - all external media
+/bin - mv, mkdir, cp files are in bin
+/etc - to store configuration file
+/lib -shared library to be imported into the programs
+/usr - place where user land apllications and their data resides (firefox, vi editor)
+/logs - logs and cached data
+----------------------------------------------------------------------------------------
+Package
+is a compressed archive that contains all the files that are required by the particular software to run
+
+A package manager is a software in a linux system that provides a consistent and automated process of installing, upgrading, configuring and removing packages from the operating system
+
+package managers
+DPKG/APT - Debian, Ubuntu
+RPM - CentOS, RedHat
+
+Install may fail due to dependencies issues. This is the reason we use higher level package managers like YUM & APT/APT-GET
+
+Working with RPM
+Installation: rpm -ivh telnet.rpm
+Uninstall: rpm -e telnet.rpm
+Upgrade: rpm -Uvh telnet.rpm
+Query: rpm -q telnet.rpm
+Verifying: rpm -Vf <path to file>
+
+YUM package manager (Yellowdog Updater Modified)
+is a high level package manager and in the hood uses rpm only
+
+DPKG
+Installation/upgrade: dpkg -i telnet.deb
+Uninstall: dpkg -r telnet.deb
+list: dpkg -l telnet
+Status: dpkg -s telnet
+Verifying: dpkg -p <path to file>
+
+apt & apt-get
+apt install gimp
+apt-get install gimp
+------------------------------------------------------------------------------------
+
+ARCHIVING FILES
+Tar is used to group multiple files or directories into a single file
+tar: tape archive
+tar -cf (to archive)
+tar -tf filename (to list the contents inside tar)
+tar -xf (to untar)
+tar -zcf (to compress tar balls)
+zcat file.gz: to read compressed file without decompressing it
+
+tar & zip in one command
+
+tar -czvf backup.tar.gz backup
+
+to retrieve the files
+
+tar -xzvf backup.tar.gz
+
+gzip test.img
+gunzip test.img.gz
+-------------------------------------------------------------------------------------
+SEARCHING FILES OR DIRECTORIES
+locate city.txt
+the only limitation of this command is that it depends on a database called mlocate.db for querying the filename if we have just installed linux or the file which we trying to locate is crated recently then this command will not give useful result
+
+find . -name city.txt 
+-------------------------------------------------------------------------------------
+Vi editor
+to undo a change press u
+to redo press ctrl + r
+-------------------------------------------------------------------------------------
+NETWORK BASICS
+
+DNS entry we do in /etc/hosts
+our DNS server has ip of 192.168.1.100 Every host has a DNS resolution configuration file at /etc/resolv.conf
+
+Domain names
+.com - commercial or general purpose
+.net - network or general purpose
+.edu - educational organization
+.org - non profit organization
+
+name to name mapping is known as cname
+
+SWITCH
+-ip link: to link and modify interface of the host
+-ip addr: to find ip
+
+ROUTER
+A router helps to connect to two networks together. It is an intelligent device 
+-route: to see the existing routing configuration
+-ip route add: to configure a gateway
+An 0.0.0.0(default gateway) means we don't need a gateway
+
+Basic network troubleshooting
+
+-Check if url is correct or not (site not rechable)
+-check the local interface by ip link command and ensure primary interface is up
+-nslookup hostname: should resolve to valid ip
+-ping remote server
+-tracerote 192.168.2.5: will show us no. of hops or devices between the source(laptop) and repo server
+-netstat -an | grep 80 | grep -i LISTEN: used to print network connections 
+-ip link set dev iplink_name up: to make link up
+
+SECURITY
+-cat /etc/passwd: the information about user account
+-id username: to list uid, gid etc
+-grep -i michael /etc/passwd: to check the home directory and default shell assigned to the user
+the superuser account has uid=0, it has all the priviledges
+system accounts have uid <100 or 500-1000 ex ssh, mail
+sevice account ex nginx
+-last: displays the record of all logges-in users and also date and time when system was rebooted
+-/etc/sudoers: only the users listed in this file can use sudo command
+with a nologin shell noone can login to the system using the root user and password directly
+-/etc/shadow: passwords are saved in this file
+
+
+ssh username@hostname or ipaddr == ssh -l hostname
+
+PASSWORDLESS CONNECTIVITY
+for doing passwordless connectivity follow below steps
+ssh-keygen -t rsa: to generate keys(private+public)
+ssh-copy-id remoteuser@hostname (to copy public key to remote server inside .ssh/authorized_keys)
+in this process public key of our laptop is copied to remote server
+----------------------------------------------------------------------------------------------
+
+CRONS
+*     *   *     *      * 
+(min)(hr)(date)(month)(weekday)
+
+eg:
+08:10 Am 19th feb monday
+10 8 19 2 1 /home/bob/usr/index.sh
+
+Special strings in cron
+@reboot, @daily, @hourly, etc for easy scheduling
+eg:
+@daily /path/to/script.sh (if we don't have any time constraint then we use @daily to reboot daily at any hour)
+
+AT command
+can be used to schedule a job only once
+name of the server is atd
+
+-----------------------------------------------------------------------------------------------
+Introduction to SYSTEMD
+if we our application to run even when we reboot the system then we need to do below steps
+-vi /etc/systemd/system/project-mercury.service
+[Service]
+ExecStart= /bin/bash /usr/bin/project-mercury.sh
+
+[Install]
+WantedBy graphical.target (to enable it after boot up)
+
+User=project_mercury
+
+Restart=on-failure
+
+RestartSec=10
+
+[Unit]
+After=postgresql.service (this means our service is dependent on postgres)
+
+-systemctl daemon-reload
+-systemctl start project-mercury.service
+-systemctl status project-mercury.service (it should be active and running)
+-systemctl stop project-mercury.service
+
+------------------------------------------------------------------------------------------------
+STORAGE
+lsblk == ls -l /dev/ | grep "^b"  == sudo fdisk -l /dev/sda: to see list of block devices in our system
+
+FILESYSTEM
+sudo blkid /dev/vdc (where /dev/vdc is partition):To check the type of filesystem
+
+Follow below stteps to create a filesystem and mount it
+-sudo mkfs.ext4 /dev/vdb
+-sudo mkdir /mnt/data
+-sudo  mount /dev/vdb /mnt/data
+ to Make the mount persistent across reboot
+-sudo vi /etc/fstab:
+/dev/vdb /mnt/data ext4 rw 0 0
+
+EXTERNAL STORAGE
+DAS: Direct attached storage
+NAS: Network attached Storage (not recommended to install OS in this)
+SAN: Storage area network
+
+NFS
+
+--------------------------------------------------------------------------------------------------
+
+LINUX COMMAND A-Z
+awk, alias, at
+bg, bc, bash
+chmod, cp, cal
+du, df, date
+echo, env, export
+find, file, free
+grep, gzip
+history, head, hostname
+ifconfig, ip, id
+jobs
+kill
+ls, less, locate
+mkdir, mv, more
+netstat, nano, nice
+openssl
+ps, pwd, passwd
+quota
+rsync, rm, reboot
+sudo, sed, sort
+top, tail, tar
+uniq, uname, useradd
+vi
+wget, whoami, wc
+xxd: used for creating hex dump
+yes, yum
+zip
+
+SYSTEM MONITORING COMMANDS
+df -h
+du -h (summarize disk usage of the set of files recursively)
+top (to check CPU utilization)
+c: shows command absolute path
+k: kill a process by pid
+n: change the number of tasks displayed
+M: memory usage
+
+-------------------------------------------------------------------------------
+TIPS & TRICKS
+
+cd -: to switch between 2 directories
+> filename: to empty a file without deleting it
+tail -f: for continuous viewing of logs which is generating data continuously
+script file.txt: after writing this command on your screen if u write any command then all these gets logged in the file. ctrl+d to end the file
+cd ~: to come to home directory
+Nice value: scale goes from -20 to 19 . The lower the number the more priority it gets
+
+
+ps -l pid (to know nice value)
+nice -n -10 /home/paul/echo.sh (To change Nice value)
+--------------------------------------------------------------------------------
+
+ENV VARIABLES
+
+Allows you to store data in memory that can be easily accessed by any program or script running from the shell.
+
+-env, printenv: to check all env variable
+-printenv HOME, echo $HOME: to check specific env variable
+
+Two types of env variable
+-local (eg: export MYVAR="hello World")
+-global
+edit ~/.profile (ubuntu)
+edit ~/.bash_profile (centos)
+and set variables
+-export MYVAR=VALUE
+-source ~/.profile (to aaply immediately)
+-----------------------------------------------------------------------------------
+LINUX BOOT PROCESS
+-BIOS (performs power on self test)
+-MBR (contains machine code instructions to boot a machine)
+-GRUB (Grand unified boot loader)
+-Kernel
+-SystemD
+------------------------------------------------------------------------------------
+NOHUP
+
+To keep process running even after closing your terminal 
+
+nohup process &
+nohup process > /dev/null 2>&1 &
+  
+
+
+
