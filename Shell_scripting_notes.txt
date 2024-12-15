@@ -1,0 +1,184 @@
+COMMAND LINE ARGUMENT:-
+When running a shell script, you can pass arguments after the script name. These arguments are represented by special variables inside the script:
+
+    $0 - The name of the script.
+    $1, $2, ..., $N - The first, second, ..., N-th arguments passed to the script.
+    $# - The total number of arguments passed to the script.
+    $@ - All arguments passed to the script as a list (each argument is quoted separately).
+    $* - All arguments passed to the script as a single string (all arguments are concatenated together).
+-----*	
+
+READ ARGUMENT:-
+This allows you to capture arguments or input from the user while the script is running, as opposed to command-line arguments passed when invoking the script.
+
+-p: Display a prompt message.
+-s: Silent mode (no input shown, useful for passwords).
+-t: Timeout in seconds (if input is not given in the specified time, read fails).
+-n: Read only a specified number of characters.
+-d: Use a custom delimiter to stop reading input.
+-a: Read input into an array.
+-e: Enable readline for input editing (e.g., using arrow keys).
+-r: Disable backslash escaping, read input literally.
+-i: Set initial value for the input (only works with -e).
+-----*
+
+ARITHMETIC OPERATIONS:-
+expr 6 + 3
+expr 6 - 3
+expr 6 / 3
+expr 6 \* 3
+
+OR
+
+Double paranthesis
+
+echo $(( A + B )) == echo $(A+B)
+------*
+
+CONDITIONAL OPERATORS:-
+Syntax of conditional operators
+
+if [ "condition" ]
+then
+elif 
+[ "condition" ]
+else
+fi
+
+Here in if loop condition is specified in "" quotes 
+
+[ String1 = String2 ]
+[[ String1 = String2 ]] (this is advanced ver and is supported in bash only eg: [[ "abcd" = *bc* ]]
+[ cond1 ] && [ cond2 ]  (if we want to check both conditions are true)
+[ cond1 ] || [ cond2 ]  (if we want to check either condition is true)
+[ -e "FILE" ] (if file exists)
+[ -d "FILE" ] (if file exists and is a directory)
+[ -s "FILE" ] (if file exists and has a size greater than 0)
+
+for mission in `cat mission-names.txt'  (here command inside`` will be executed first and that output will be given to for loop)
+or 
+for mission in $(cat mission-names.txt) (it is similar to previous case except here we can use multiple commands inside () )
+----------
+for i in 1 2 3 4 5
+=
+for i in {1..100}
+=
+for (( i = 0; i <= 100; i++ )) 
+-----*
+
+EXIT CODES
+Exit codes allow you to check whether a command or script completed successfully (0 for success) or encountered an error (1-255 for various errors).
+The exit status of a command can be accessed using $?.
+The exit command is used to specify a script's exit status.
+Exit codes can be used for flow control, error handling, and debugging in shell scripts.
+
+
+-----*
+FUNCTION:-
+A function within a shell script is a piece of code that performs a particular funtion that can be reused and repurposed throughout the script.
+-return code in a funtion is just like the exit code for the entire script but in return case it doesnot exits the script, it will onlt exit the function
+
+eg:
+function name(){
+commands
+}
+
+name $1
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+BASIC SCRIPTS
+
+1. To get month
+
+#!/bin/bash
+month_number=$1
+
+#-z test checks if the variable month_number is empty (i.e., no argument was passed when running the script)
+if [ -z $month_number ]
+then
+  echo "No month number given. Please enter a month number as a command line argument."
+  echo "eg: ./print-month-number 5"
+  exit
+fi
+
+if [[ $month_number -lt 1 ]] || [[ $month_number -gt 12 ]]
+then
+  echo "Invalid month number given. Please enter a valid number - 1 to 12."
+  exit
+fi
+
+if [ $month_number -eq 1 ]
+then
+  echo "January"
+elif [ $month_number -eq 2 ]
+then
+  echo "February"
+elif [ $month_number -eq 3 ]
+then
+  echo "March"
+elif [ $month_number -eq 4 ]
+then
+  echo "April"
+elif [ $month_number -eq 5 ]
+then
+  echo "May"
+elif [ $month_number -eq 6 ]
+then
+  echo "June"
+elif [ $month_number -eq 7 ]
+then
+  echo "July"
+elif [ $month_number -eq 8 ]
+then
+  echo "August"
+elif [ $month_number -eq 9 ]
+then
+  echo "September"
+elif [ $month_number -eq 10 ]
+then
+  echo "October"
+elif [ $month_number -eq 11 ]
+then
+  echo "November"
+elif [ $month_number -eq 12 ]
+then
+  echo December
+fi
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2. To take backup and then scp the files
+#!/bin/bash
+
+# Check if the script argument is provided
+if [ -z "$1" ]; then
+    echo "Usage: $0 <file_name>"
+    exit 1
+fi
+
+i=$1
+
+#The ssh command is now followed by a here document (<< EOF) to execute multiple commands on the remote server
+ssh -q cellgadm@abdba4551 << EOF
+  # Navigate to the target directory
+  cd "/home/users/Nik/bin"
+
+  # Check if the file exists before attempting to rename
+  if [ -f "$i" ]; then
+      mv "$i" "${i}_bkp" || { echo "Failed to rename $i"; exit 1; }
+  else
+      echo "$i does not exist."
+      exit 1
+  fi
+EOF
+
+# If SSH completed successfully, use SCP to copy the file
+if [ $? -eq 0 ]; then
+    scp "$i" cellgadm@abdba4551:/home/users/Nik/bin
+else
+    echo "Error occurred during SSH session."
+    exit 1
+fi
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
