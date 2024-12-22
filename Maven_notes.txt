@@ -1,0 +1,258 @@
+MAVEN
+It is a project(java) management tool.
+It is based on POM(Project Objectg Model), is a main configuration file and pom.xml has two things inside it- dependencies & compilers
+
+one project - one workspace - one pom.xml
+machine always communicates with local repo to get all the dependencies and if doesn't find there then goes to remote repo & then central repo 
+local repo = .M2
+
+Sure! Below is a comprehensive **Standard Operating Procedure (SOP)** for **Apache Maven**, including the most commonly used Maven commands and steps for creating, building, and managing Java projects.
+
+---
+
+# **Standard Operating Procedure (SOP) for Apache Maven**
+
+## **1. Introduction to Maven**
+Apache Maven is a build automation tool used primarily for Java projects. It provides a consistent, uniform build process for developers and manages project dependencies, builds, and project structures. Maven simplifies the process of managing libraries and integrating with various tools.
+
+This SOP will guide you through Maven's usage, explaining its basic commands, configuration, and most common tasks.
+
+---
+
+## **2. Prerequisites**
+Before you start using Maven, ensure the following:
+- **Java Development Kit (JDK)** is installed on your machine.
+- **Maven** is installed and configured.
+- **Maven Environment Variables**:
+  - `MAVEN_HOME` (Path to Maven installation)
+  - `JAVA_HOME` (Path to JDK installation)
+  - `PATH` (Include `bin` directories for both JDK and Maven)
+
+---
+
+## **3. Maven Installation and Configuration**
+### 3.1 Install Maven
+1. **Download Maven**:
+   - Go to the [Maven download page](https://maven.apache.org/download.cgi) and download the latest version.
+   
+2. **Extract Maven**:
+   - Extract the downloaded ZIP archive to a location on your system.
+
+3. **Set Environment Variables**:
+   - **Windows**:
+     - Set `MAVEN_HOME` to the Maven installation folder.
+     - Add the `bin` directory to the `PATH` environment variable.
+     - Set `JAVA_HOME` to your JDK path.
+   - **Linux/Mac**:
+     - Open the terminal and edit your shell configuration file (`~/.bashrc`, `~/.zshrc`).
+     - Add the following lines:
+       ```bash
+       export MAVEN_HOME=/path/to/maven
+       export JAVA_HOME=/path/to/jdk
+       export PATH=$PATH:$MAVEN_HOME/bin
+       ```
+
+4. **Verify Installation**:
+   - Run `mvn -version` in the terminal to verify that Maven is installed correctly.
+
+---
+
+## **4. Maven Project Structure**
+
+A basic Maven project follows the standard directory structure, like this:
+```
+/my-maven-project
+    ├── pom.xml (Project Object Model file)
+    ├── src
+    │   ├── main
+    │   │   ├── java
+    │   │   └── resources
+    │   ├── test
+    │   │   └── java
+    │   └── target (generated during build)
+    └── .gitignore
+```
+
+---
+
+## **5. Maven Commands and Usage**
+
+### 5.1 Basic Maven Commands
+
+#### 5.1.1 `mvn validate`
+- **Purpose**: Validates the project structure and checks for errors in the `pom.xml` file.
+- **Usage**: Run this command to ensure the project is correctly set up.
+  ```bash
+  mvn validate
+  ```
+
+#### 5.1.2 `mvn clean`
+- **Purpose**: Removes the `target/` directory, which contains the compiled files and the artifacts.
+- **Usage**: Clean up the previous build artifacts.
+  ```bash
+  mvn clean
+  ```
+
+#### 5.1.3 `mvn compile`
+- **Purpose**: Compiles the source code of the project.
+- **Usage**: Run this to compile your project.
+  ```bash
+  mvn compile
+  ```
+
+#### 5.1.4 `mvn test`
+- **Purpose**: Runs the unit tests defined in the project.
+- **Usage**: This will compile the code and run any tests present in the `src/test/java` directory.
+  ```bash
+  mvn test
+  ```
+
+#### 5.1.5 `mvn package`
+- **Purpose**: Compiles the project and packages it into a distributable format (like JAR, WAR).
+- **Usage**: This creates a `.jar` or `.war` file in the `target/` directory.
+  ```bash
+  mvn package
+  ```
+
+#### 5.1.6 `mvn install`
+- **Purpose**: Compiles, tests, and packages the project and installs the built artifact into the local repository (`~/.m2/repository`).
+- **Usage**: Use this to install the artifact into your local Maven repository.
+  ```bash
+  mvn install
+  ```
+
+#### 5.1.7 `mvn deploy`
+- **Purpose**: Deploys the packaged artifact to a remote repository (e.g., Nexus, Artifactory).
+- **Usage**: This is typically used in CI/CD pipelines to deploy the build artifacts.
+  ```bash
+  mvn deploy
+  ```
+
+#### 5.1.8 `mvn site`
+- **Purpose**: Generates project-related documentation (such as reports and information) and places it in the `target/site` directory.
+- **Usage**: Run this to generate the project website.
+  ```bash
+  mvn site
+  ```
+
+---
+
+### 5.2 Maven Lifecycle Phases
+
+Maven defines a series of **lifecycle phases**. The following are some of the most commonly used:
+
+- **clean**: Cleans up the project.
+- **validate**: Validates the project structure.
+- **compile**: Compiles the source code.
+- **test**: Runs unit tests.
+- **package**: Packages the compiled code into a distributable format (e.g., `.jar` or `.war`).
+- **install**: Installs the artifact in the local Maven repository.
+- **deploy**: Deploys the artifact to a remote repository.
+
+Each Maven phase can be executed individually or as part of a larger lifecycle.
+
+---
+
+## **6. Project Object Model (POM)**
+
+The `pom.xml` file is the core configuration file in a Maven project. It defines project dependencies, plugins, goals, and other configurations.
+
+### Basic `pom.xml` Structure:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Basic project information -->
+    <groupId>com.example</groupId>
+    <artifactId>my-project</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <!-- Dependencies -->
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>5.2.9.RELEASE</version>
+        </dependency>
+    </dependencies>
+
+    <!-- Build Configuration -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+```
+
+### Common Sections in `pom.xml`:
+- **`dependencies`**: Specifies external libraries your project depends on.
+- **`build`**: Configures build plugins like the compiler plugin, assembly plugin, etc.
+- **`repositories`**: Specifies remote repositories where Maven should search for dependencies.
+- **`properties`**: Custom project properties, like Java version, version control properties, etc.
+
+---
+
+## **7. Maven Dependency Management**
+
+Maven handles project dependencies automatically. You can define dependencies in the `pom.xml` file, and Maven will download and include them during the build process.
+
+Example of adding a dependency:
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>5.7.1</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+```
+
+### 7.1 Dependency Scope
+- **compile**: Default scope. Available at compile, runtime, and test phases.
+- **provided**: Available at compile and test phases but not included in the final artifact.
+- **runtime**: Not needed for compilation but required for execution.
+- **test**: Only available for test compilation and execution.
+- **system**: Similar to `provided`, but explicitly refers to a system-level dependency.
+
+---
+
+## **8. Maven Profiles**
+
+Maven allows you to define **profiles** in the `pom.xml` to customize the build process for different environments (e.g., development, production). You can activate a profile through the command line or via the `pom.xml`.
+
+Example profile configuration:
+```xml
+<profiles>
+    <profile>
+        <id>development</id>
+        <properties>
+            <env>dev</env>
+        </properties>
+    </profile>
+</profiles>
+```
+
+To activate the profile from the command line:
+```bash
+mvn install -Pdevelopment
+```
+
+---
+
+## **9. Conclusion**
+
+Maven is a powerful tool that automates and simplifies the build process for
