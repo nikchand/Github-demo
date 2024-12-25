@@ -1,0 +1,223 @@
+Apache Tomcat is an open-source implementation of the **Java Servlet, JavaServer Pages (JSP), and WebSocket technologies**. It acts as a lightweight application server, allowing you to deploy and run Java-based web applications. It's widely used for hosting Java-based web apps in a production environment or during development.
+
+---
+
+### **Key Features of Apache Tomcat:**
+- Supports Java Servlets and JSP.
+- Lightweight compared to other Java EE application servers.
+- Flexible deployment of WAR files.
+- Robust and easy to integrate with other technologies.
+
+---
+
+### **Important Commands for Apache Tomcat**
+
+Below are the essential commands used to manage and work with Apache Tomcat:
+
+#### **1. Start Tomcat**
+- **Linux/Unix:**
+  ```bash
+  ./startup.sh
+  ```
+- **Windows:**
+  ```bash
+  startup.bat
+  ```
+
+#### **2. Stop Tomcat**
+- **Linux/Unix:**
+  ```bash
+  ./shutdown.sh
+  ```
+- **Windows:**
+  ```bash
+  shutdown.bat
+  ```
+
+#### **3. Check Tomcat Status**
+Check if Tomcat is running by looking for the process:
+```bash
+ps -ef | grep tomcat
+```
+OR check if the port (default is 8080) is in use:
+```bash
+netstat -tuln | grep 8080
+```
+
+#### **4. Deploy Applications**
+To deploy a WAR file:
+```bash
+cp /path/to/your-app.war /opt/apache-tomcat-x.x.x/webapps/
+```
+Tomcat automatically extracts and deploys the WAR file.
+
+#### **5. Access Logs**
+View the logs to monitor application behavior or troubleshoot:
+```bash
+tail -f /opt/apache-tomcat-x.x.x/logs/catalina.out
+```
+
+#### **6. Reload an Application**
+Tomcat doesn’t have an explicit reload command, but you can delete the deployed app folder from the `webapps` directory:
+```bash
+rm -rf /opt/apache-tomcat-x.x.x/webapps/your-app
+```
+Then re-copy the updated WAR file.
+
+#### **7. View Active Sessions**
+Use the **Manager App** (if enabled) to monitor active sessions. To access:
+1. Go to: `http://<server-ip>:8080/manager/html`
+2. Log in using the credentials defined in `conf/tomcat-users.xml`.
+
+#### **8. Check Tomcat Version**
+To find out the version of Tomcat installed:
+```bash
+./version.sh
+```
+On Windows:
+```bash
+version.bat
+```
+
+#### **9. Restart Tomcat**
+Restart Tomcat by stopping and starting it again:
+```bash
+./shutdown.sh && ./startup.sh
+```
+
+#### **10. Configure Ports**
+Edit the `server.xml` file located in the `conf` directory:
+```bash
+nano /opt/apache-tomcat-x.x.x/conf/server.xml
+```
+Change the port number in the following section:
+```xml
+<Connector port="8080" protocol="HTTP/1.1" connectionTimeout="20000" redirectPort="8443" />
+```
+
+#####  Configure Users**
+1. Edit the `tomcat-users.xml` file in the `conf` directory to add admin users:
+   ```xml
+   <role rolename="manager-gui"/>
+   <role rolename="admin-gui"/>
+   <user username="admin" password="password" roles="manager-gui,admin-gui"/>
+   ```
+
+#### **11. Manage Tomcat Service (If Installed as a Service)**
+- Start Tomcat service:
+  ```bash
+  sudo systemctl start tomcat
+  ```
+- Stop Tomcat service:
+  ```bash
+  sudo systemctl stop tomcat
+  ```
+- Restart Tomcat service:
+  ```bash
+  sudo systemctl restart tomcat
+  ```
+- Check the status of Tomcat:
+  ```bash
+  sudo systemctl status tomcat
+  ```
+
+---
+
+### **Common Configuration Files in Apache Tomcat**
+1. **`server.xml`**:
+   - Main configuration file for Tomcat, including port numbers and connectors.
+
+2. **`web.xml`**:
+   - Defines global settings for servlets and JSPs.
+
+3. **`tomcat-users.xml`**:
+   - Manages users and roles for authentication.
+
+4. **`catalina.properties`**:
+   - Defines system properties and class loader configurations.
+
+5. **Logs Directory (`logs/`)**:
+   - Contains important logs like `catalina.out`, `localhost.log`, etc.
+
+---
+
+#### **3. Installation**
+
+##### **3.1 Download Tomcat**
+1. Visit the [Apache Tomcat downloads page](https://tomcat.apache.org/).
+2. Select the appropriate version for your system.
+3. Download the `.zip` or `.tar.gz` file.
+
+##### **3.2 Extract Files**
+- For Linux:
+  ```bash
+  tar -xvzf apache-tomcat-x.x.x.tar.gz -C /opt
+  ```
+- For Windows:
+  Extract the `.zip` file to a desired directory, e.g., `C:\Tomcat`.
+
+##### **3.3 Configure Environment Variables**
+1. Set the `JAVA_HOME` environment variable to point to your JDK installation.
+   - **Linux:** Add the following lines to `~/.bashrc` or `/etc/environment`:
+     ```bash
+     export JAVA_HOME=/path/to/jdk
+     export PATH=$JAVA_HOME/bin:$PATH
+     ```
+   - **Windows:**
+     - Go to `System Properties > Advanced > Environment Variables`.
+     - Add `JAVA_HOME` and update the `Path` variable to include `%JAVA_HOME%\bin`.
+
+2. Reload the environment variables:
+   - **Linux:**
+     ```bash
+     source ~/.bashrc
+     ```
+
+##### **3.4 Start Tomcat**
+1. Navigate to the `bin` directory of the Tomcat installation:
+   ```bash
+   cd /opt/apache-tomcat-x.x.x/bin
+   ```
+2. Start the server:
+   ```bash
+   ./startup.sh
+   ```
+   - For Windows, run `startup.bat`.
+3. Access Tomcat via a web browser:
+   - URL: `http://<server-ip>:8080` (default port).
+
+
+
+===============================
+Task to do today
+1. Using AWS on Kodekloud and create instance of RHEL. AWS console screenshot RHEL running 10
+2. cat /etc/os-release ---ss 5
+3. installing docker on the instance 10
+4. install git 5
+5. running tomcat on docker instance. docker ps -a, docker logs 20
+6. ss of basic tomcat deployment 10
+7. ss of dockerfile deployment 5
+ 
+==================================
+-sudo yum update -y (to update all packages)
+-sudo yum install -y yum-utils (yum-utils is a collection of utilities and plugins that enhance the functionality of the yum package manager. It includes tools for package management, debugging, and repository configuration.)
+-sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+-sudo yum install -y --allowerasing  docker-ce docker-ce-cli containerd.io  (installing docker)
+-sudo systemctl start docker (starting docker service) 
+-sudo systemctl enable docker
+-sudo systemctl status docker
+-docker --version
+-sudo usermod -aG docker ec2-user (This grants the ec2-user permission to run Docker commands without needing to use sudo)
+-newgrp docker (newgrp docker allows you to avoid logging out by starting a new shell session with the docker group applied)
+
+sudo yum install git (installing git)
+
+-docker pull tomcat:latest (getting tomcat image)
+-git clone https://github.com/Shantanumtk/Docker-Projects/
+-docker run -d -p 3000:8080 --name tomcat-container -v /home/ec2-user/Docker-Projects/Tomcat-Web-Server/sample.war:/usr/local/tomcat/webapps/sample.war tomcat:latest
+-go to browser and hit http://localhost:8080/sample (deploying WAR manually, we need keep name of the war without .war)
+
+-->using docker file
+-docker build -t tomcat-server .
+-docker run -d -p 3000:8080 --name tomcat-container tomcat-server
+-go to browser and hit http://localhost:3000/sample = http://52.91.173.158:3000/sample
