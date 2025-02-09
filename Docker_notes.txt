@@ -1,0 +1,109 @@
+DOCKER
+
+-docker run nginx (to run the container from the image)
+-docker ps (lists all running containers)
+-docker ps -a (this outputs all running as well as stopped containers)
+-docker stop <name> (to stop the container)
+-docker rm <name> (to remove a stopoped or exited container)
+-docker remove -f <name> (is a combination of above 2 commands) 
+-docker images (to see list of images and their sizes)
+-docker rmi nginx (to remove an image that we no longer planning to use)
+
+NOTE: We must stop and delete all the dependent containers to be able to delete an image)
+A container only lives as long as the process inside it is alive)
+
+-docker pull nginx (to only pull the image and not run the container)
+-docker exec <name> cat /etc/hosts (eg of executing a command on docker container)
+-docker run -d <repo name> (to run the container in the detatched mode(background))
+-docker attach <container id> (to bring in foreground)
+-docker run -d --name webapp nginx:1.14-alpine (Run a container with the nginx:1.14-alpine image and name it webapp)
+-docker run redis:4.0 (tag-- here redis:4.0 is a tag where we are mentioning the version we want to pull otherwise it will pull latest version)
+-docker run -it <script> (docker container is non-interactive so to get promt we use -it)
+-docker run -p 8000:5000 <container> (here 8000 is the port of docker host & 5000 is the port of containerized web application)
+
+DOCKER VOLUME:-
+-docker run -v /opt/datadir:/var/lib/mysql mysql (if we want our data of container to be there even after deleting the container then we map it with mount outside[/opt/datadir] )
+
+-docker volume rm <volume name> (to delete the volume)
+
+-docker inspect <container name> (to get additional details about container, can say upgrdaed ver of docker run ps)
+-docker logs <container name> (to get logs)
+-docker logs -f <container name> (to get live logs)
+-docker cp file1 <container name>:path (to copy a file from local machine to conatiner to a specific path)
+-docker cp <container name>:path . (to copy file from container to local desktop)
+
+DOCKER REGISTRY:-
+1. Go to docker hub > repositories > create repository
+2. give name, description & visibility--create
+-docker build -t <take name from docker hub>
+-docker images
+-docker login (put credentials)
+-docker push <image name> (after this doocker image will be available in docker hub)
+-docker pull <image name> (to get image from docker hub)
+
+DOCKER COMPOSE:-
+If we don't want to run big big commands then we write compose file with all details inside it
+eg: vi docker-compose.yml
+
+version: '3.8'
+
+services:
+  web:
+    image: nginx:alpine
+    container_name: nginx-server
+    volumes:
+      - ./html:/usr/share/nginx/html
+    ports:
+      - "8080:80"
+=====================================
+
+-docker-compose up -d
+-docker-compose down
+
+DOCKER NETWORK
+
+-docker network ls
+-docker network create <name> 
+
+----------------------------------------------------------------
+CREATING OWN IMAGE
+
+1. create a docker file named dockerfile
+2. write down instructions for setting up your application
+3. docker build Dockerfile -t . <image> (build the image using this command,this will create image locally on the system)
+4. docker push <image> (To make image global)
+
+eg:
+
+# Use the official Python image from Docker Hub
+FROM python:3.10-slim
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the current directory (your project) contents into the container's /app directory
+COPY . /app
+
+# Install dependencies (assuming you have a requirements.txt file)
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expose the port the app runs on
+EXPOSE 5000
+
+# Set the default command to run your app
+CMD ["python", "app.py"]
+--------------------------------------
+DockerFile: It is a simple text file with instructions to build an image.
+
+Image: Single file with all the dep and lib to run the program
+
+Docker registry: A docker registry is a central repository for storing and distributing docker images.
+--------------------------------------
+Run a container named blue-app using image kodekloud/simple-webapp and set the environment variable APP_COLOR to blue. Make the application available on port 38282 on the host. The application listens on port 8080
+
+Run the command : docker run -p 38282:8080 --name blue-app -e APP_COLOR=blue -d kodekloud/simple-webapp
+
+To know the env field from within a webapp container, run docker exec -it blue-app env
+
+
+
